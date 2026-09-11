@@ -1,8 +1,13 @@
 "use client";
 
 import { ReactNode } from "react";
+import GoogleAuthProvider from "./google-auth.provider";
 import QueryProviders from "./query.provider";
 
 export default function Providers({ children }: { children: ReactNode }) {
-  return <QueryProviders>{children}</QueryProviders>;
+  return (
+    <GoogleAuthProvider>
+      <QueryProviders>{children}</QueryProviders>
+    </GoogleAuthProvider>
+  );
 }
