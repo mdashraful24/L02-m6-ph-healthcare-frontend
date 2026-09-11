@@ -1,3 +1,5 @@
+"use client";
+
 import {
   environmentManager,
   QueryClient,
@@ -32,6 +34,6 @@ export default function QueryProviders({ children }: { children: ReactNode }) {
   const queryClient = getQueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}> {children} </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
