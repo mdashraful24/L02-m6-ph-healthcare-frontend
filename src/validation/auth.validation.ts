@@ -46,6 +46,10 @@ export const patientRegistrationSchema = z.object({
 // todo: We need to confirm from [3-9] that the contact number is valid or not. Because there are some operators that are not in use anymore. So we need to confirm from [3-9] that the contact number is valid or not.
 // ? Either +880, 880, or 0 can be used as the prefix for the contact number. So we need to confirm from [3-9] that the contact number is valid or not. Because there are some operators that are not in use anymore. So we need to confirm from [3-9] that the contact number is valid or not.
 
+export const resendRegistrationOtpSchema = z.object({
+    email: z.string().email("Not a valid email address"),
+});
+
 export const loginSchema = z.object({
     email: z
         .string()

@@ -1,8 +1,15 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
 import { Eye, EyeClosed } from "lucide-react";
-import { Button } from "../ui/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type z from "zod";
+import { useRegistration } from "@/hooks/auth.hook";
+import { patientRegistrationSchema } from "@/validation";
+import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
+import { Button } from "../ui/button";
 import {
   Field,
   FieldError,
@@ -11,15 +18,8 @@ import {
   FieldSeparator,
 } from "../ui/field";
 import { Input } from "../ui/input";
-import Link from "next/link";
-import { useForm } from "@tanstack/react-form";
-import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
-import { patientRegistrationSchema } from "@/validation";
-import z from "zod";
-import { useRegistration } from "@/hooks/auth.hook";
-import { toast } from "../ui/toast";
-import { useRouter } from "next/navigation";
 import { Spinner } from "../ui/spinner";
+import { toast } from "../ui/toast";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -36,7 +36,8 @@ export default function RegisterForm() {
     confirmPassword: "Password@123",
   };
 
-  const { mutate: registration, isPending: registrationPending } = useRegistration();
+  const { mutate: registration, isPending: registrationPending } =
+    useRegistration();
 
   const form = useForm({
     defaultValues,
@@ -71,7 +72,15 @@ export default function RegisterForm() {
             type: "success",
           });
 
-          const params = new URLSearchParams({ email: registrationData.email });
+          const params = new URLSearchParams({
+            email: registrationData.email,
+            expiresAt: res?.data?.expiresAt || "",
+            sessionExpiresAt: res?.data?.sessionExpiresIn
+              ? new Date(
+                  Date.now() + res.data.sessionExpiresIn * 1000,
+                ).toISOString()
+              : "",
+          });
           router.push(`/register/verify-account?${params.toString()}`);
         },
         onError: (err) => {
