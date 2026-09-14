@@ -29,11 +29,11 @@ export default function RegisterForm() {
   type PatientDefaultValues = z.infer<typeof patientRegistrationSchema>;
 
   const defaultValues: PatientDefaultValues = {
-    name: "Mr. Islam",
-    email: "islam50-076@diu.edu.bd",
-    contactNumber: "01712345678",
-    password: "Password@123",
-    confirmPassword: "Password@123",
+    name: "",
+    email: "",
+    contactNumber: "",
+    password: "",
+    confirmPassword: "",
   };
 
   const { mutate: registration, isPending: registrationPending } =
