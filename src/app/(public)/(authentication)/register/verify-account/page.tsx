@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Logo from "@/assets/svg/Logo";
 import VerifyAccountForm from "@/components/form/verify-account-form";
 
@@ -13,7 +14,9 @@ export default function VerifyAccountPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <VerifyAccountForm />
+            <Suspense fallback={<div>Loading...</div>}>
+              <VerifyAccountForm />
+            </Suspense>
           </div>
         </div>
       </div>
