@@ -3,7 +3,7 @@
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useResendRegistrationOtp, useVerifyAccount } from "@/hooks";
+import { useResendRegistrationOtp, useVerifyAccount, useVerifyDoctorAccount } from "@/hooks";
 import { resendRegistrationOtpSchema } from "@/validation";
 import { Button } from "../ui/button";
 import {
@@ -19,18 +19,23 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { Spinner } from "../ui/spinner";
 import { toast } from "../ui/toast";
 
-export default function VerifyAccountForm() {
+export default function VerifyAccountForm({
+  mode = "patient",
+}: {
+  mode: "doctor" | "patient";
+}) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const [otp, setOtp] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
+  
+  const { mutate: resendOtp, isPending: resendPending } = useResendRegistrationOtp();
 
-  const { mutate: verifyAccount, isPending: verifyPending } =
-    useVerifyAccount();
+  const { mutate: verifyPatientAccount, isPending: verifyPatientPending } = useVerifyAccount();
+  const {mutate: verifyDoctorAccount, isPending: verifyDoctorPending} = useVerifyDoctorAccount();
 
-  const { mutate: resendOtp, isPending: resendPending } =
-    useResendRegistrationOtp();
+  const verify = mode === "doctor" ? verifyDoctorAccount : verifyPatientAccount;
 
   const email = searchParams.get("email") || "";
 
@@ -84,7 +89,7 @@ export default function VerifyAccountForm() {
       otp,
     };
 
-    verifyAccount(verifyData, {
+    verify(verifyData, {
       onSuccess: (res) => {
         if (!res.success) {
           toast.add({
@@ -92,6 +97,16 @@ export default function VerifyAccountForm() {
             description: "Something went wrong. Please try again.",
             type: "error",
           });
+          return;
+        }
+
+        if(mode === "doctor"){
+          toast.add({
+            title: "Verification Successful",
+            description: "An admin will review your application and verify your account. This may take some time. You will be notified via email once your account is verified.",
+            type: "success",
+          });
+          router.push("/");
           return;
         }
 
@@ -241,9 +256,9 @@ export default function VerifyAccountForm() {
         <Button
           type="submit"
           form="otp-form"
-          disabled={verifyPending || isOtpExpired}
+          disabled={verifyDoctorPending || isOtpExpired}
         >
-          {verifyPending ? (
+          {verifyDoctorPending ? (
             <>
               <Spinner />
               Verifying account...

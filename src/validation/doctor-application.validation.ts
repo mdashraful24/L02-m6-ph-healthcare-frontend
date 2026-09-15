@@ -24,7 +24,19 @@ export function isAcceptedFileType(fileType: string) {
 
 const ACCEPTED_FILE_TYPES_LABEL = "PDF, DOC, DOCX, or image";
 
-export const applyAsDoctorSchema = z.object({
+export const getCustomFileSchema = <T>(message: string) =>
+  z.custom<T>(
+    (value) =>
+      value === null ||
+      (value instanceof File &&
+        isAcceptedFileSize(value.size) &&
+        isAcceptedFileType(value.type)),
+    {
+      message: message,
+    },
+  );
+
+export const doctorApplicationSchema = z.object({
   name: z
     .string("Name is required")
     .trim()
@@ -52,7 +64,10 @@ export const applyAsDoctorSchema = z.object({
   contactNumber: z
     .string()
     .trim()
-    .min(7, "Contact number is too short")
+    .refine(
+      (value) => value === "" || value.length >= 7,
+      "Contact number is too short",
+    )
     .max(20, "Contact number is too long")
     .optional(),
 
@@ -75,8 +90,11 @@ export const applyAsDoctorSchema = z.object({
     .max(500, "Qualifications must not exceed 500 characters"),
 
   experienceYears: z
-    .string("Experience years is required")
-    .min(1, "Experience years is required")
+    .string()
+    .refine(
+      (value) => /^\d+$/.test(value),
+      "Experience years must be a valid number",
+    )
     .refine(
       (value) => !Number.isNaN(Number(value)),
       "Experience years must be a valid number",
@@ -90,8 +108,42 @@ export const applyAsDoctorSchema = z.object({
       "Experience years cannot be negative",
     )
     .refine(
-      (value) => Number(value) <= 70,
-      "Experience years must not exceed 70",
+      (value) => Number(value) <= 60,
+      "Experience years must not exceed 60",
+    ),
+
+  consultationFee: z
+    .string()
+    .trim()
+    .refine(
+      (value) => value === "" || (/^\d+$/.test(value) && Number(value) >= 0),
+      {
+        message: "Consultation fee must be a non-zero whole number",
+      },
+    )
+    .optional(),
+
+  resume: getCustomFileSchema<File | null>(
+    `Resume must be a ${ACCEPTED_FILE_TYPES_LABEL} file and must not exceed ${MAX_FILE_SIZE} MB`,
+  ).refine((value) => value instanceof File, {
+    message: "A resume of cv is required",
+  }),
+
+  additionalDocuments: z
+    .array(z.custom<File>((value) => value instanceof File))
+    .max(
+      MAX_ADDITIONAL_DOCUMENTS,
+      `You can attach at most ${MAX_ADDITIONAL_DOCUMENTS} additional documents`,
+    )
+    .refine(
+      (files) =>
+        files.every(
+          (file) =>
+            isAcceptedFileSize(file.size) && isAcceptedFileType(file.type),
+        ),
+      {
+        message: `Each additional document must be a ${ACCEPTED_FILE_TYPES_LABEL} file and must not exceed ${MAX_FILE_SIZE} MB`,
+      },
     ),
 
   bio: z
@@ -99,72 +151,4 @@ export const applyAsDoctorSchema = z.object({
     .trim()
     .max(2000, "Bio must not exceed 2000 characters")
     .optional(),
-
-  consultationFee: z
-    .string()
-    .refine(
-      (value) => value === "" || !Number.isNaN(Number(value)),
-      "Consultation fee must be a valid number",
-    )
-    .refine(
-      (value) => value === "" || Number(value) >= 0,
-      "Consultation fee cannot be negative",
-    )
-    .refine(
-      (value) => value === "" || Number(value) <= 99999999.99,
-      "Consultation fee is too large",
-    )
-    .optional(),
-
-  resume: z.custom<File | null>().superRefine((file, ctx) => {
-    if (!file) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Please upload your resume",
-      });
-      return;
-    }
-
-    if (!isAcceptedFileType(file.type)) {
-      ctx.addIssue({
-        code: "custom",
-        message: `Resume must be an ${ACCEPTED_FILE_TYPES_LABEL} file`,
-      });
-    } else if (!isAcceptedFileSize(file.size)) {
-      ctx.addIssue({
-        code: "custom",
-        message: `Resume must not exceed ${MAX_FILE_SIZE} MB`,
-      });
-    }
-  }),
-
-  additionalDocuments: z.array(z.custom<File>()).superRefine((files, ctx) => {
-    if (files.length === 0) {
-      return;
-    }
-
-    if (files.length > MAX_ADDITIONAL_DOCUMENTS) {
-      ctx.addIssue({
-        code: "custom",
-        message: `You can upload at most ${MAX_ADDITIONAL_DOCUMENTS} additional documents`,
-      });
-      return;
-    }
-
-    files.forEach((file, index) => {
-      if (!isAcceptedFileType(file.type)) {
-        ctx.addIssue({
-          code: "custom",
-          path: [index],
-          message: `"${file.name}" must be an ${ACCEPTED_FILE_TYPES_LABEL} file`,
-        });
-      } else if (!isAcceptedFileSize(file.size)) {
-        ctx.addIssue({
-          code: "custom",
-          path: [index],
-          message: `"${file.name}" must not exceed ${MAX_FILE_SIZE} MB`,
-        });
-      }
-    });
-  }),
 });

@@ -9,16 +9,18 @@ import {
   Mail,
   MapPin,
   Phone,
+  Plus,
   Stethoscope,
   User,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import type z from "zod";
-import type { DoctorApplicationData, DoctorApplicationPayload } from "@/types";
+import { useApplyAsDoctor } from "@/hooks";
+import type { DoctorApplicationData } from "@/types";
 import { formatFileSize } from "@/utils";
 import {
-  applyAsDoctorSchema,
+  doctorApplicationSchema,
   isAcceptedFileSize,
   isAcceptedFileType,
   MAX_ADDITIONAL_DOCUMENTS,
@@ -27,36 +29,45 @@ import {
 import { Button } from "../ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { useRouter } from "next/navigation";
-import { useApplyAsDoctor } from "@/hooks";
 import { Spinner } from "../ui/spinner";
+import { Textarea } from "../ui/textarea";
+
+function getAdditionalDocumentErrorMessage(file: File) {
+  if (!isAcceptedFileSize(file.size)) {
+    return `File exceeds the ${MAX_FILE_SIZE} MB size limit`;
+  }
+
+  if (!isAcceptedFileType(file.type)) {
+    return "Only PDF, DOC, DOCX, or image files are allowed";
+  }
+
+  return null;
+}
 
 export default function DoctorApplyForm() {
-  const router = useRouter();
   const { mutate: apply, isPending: applyPending } = useApplyAsDoctor();
 
-  type DoctorDefaultValues = z.infer<typeof applyAsDoctorSchema>;
+  type DoctorDefaultValues = z.input<typeof doctorApplicationSchema>;
 
   const defaultValues: DoctorDefaultValues = {
-    name: "Dr. Sarah Khan",
-    email: "sarah.khan@example.com",
-    address: "Banani, Dhaka, Bangladesh",
-    contactNumber: "+8801912345678",
-    specialization: "Cardiology",
-    licenseNumber: "BMDC-10045",
-    qualifications: "MBBS, FCPS in Cardiology",
-    experienceYears: "8",
-    bio: "Dr. Sarah Khan is a board-certified cardiologist specializing in preventive cardiology, heart failure management, and interventional procedures.",
-    consultationFee: "2000",
-    resume: null as File | null,
-    additionalDocuments: [] as File[],
+    name: "",
+    email: "",
+    address: "",
+    contactNumber: "",
+    specialization: "",
+    licenseNumber: "",
+    qualifications: "",
+    experienceYears: "",
+    bio: "",
+    consultationFee: "",
+    resume: null,
+    additionalDocuments: [],
   };
 
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: applyAsDoctorSchema,
+      onSubmit: doctorApplicationSchema,
     },
     onSubmit: async ({ value }) => {
       const doctorData: DoctorApplicationData = {
@@ -180,7 +191,12 @@ export default function DoctorApplyForm() {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Contact number</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      Contact number{" "}
+                      <span className="font-normal text-muted-foreground">
+                        (Optional)
+                      </span>
+                    </FieldLabel>
                     <div className="relative">
                       <Phone className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
@@ -240,7 +256,12 @@ export default function DoctorApplyForm() {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Address</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      Practice Address{" "}
+                      <span className="font-normal text-muted-foreground">
+                        (Optional)
+                      </span>
+                    </FieldLabel>
                     <div className="relative">
                       <MapPin className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
@@ -360,7 +381,10 @@ export default function DoctorApplyForm() {
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>
-                      Consultation fee (BDT)
+                      Consultation fee (BDT){" "}
+                      <span className="font-normal text-muted-foreground">
+                        (Optional)
+                      </span>
                     </FieldLabel>
                     <Input
                       id={field.name}
@@ -411,15 +435,6 @@ export default function DoctorApplyForm() {
                       onChange={(e) => {
                         const selected = e.target.files?.[0] ?? null;
 
-                        if (
-                          selected &&
-                          (!isAcceptedFileSize(selected.size) ||
-                            !isAcceptedFileType(selected.type))
-                        ) {
-                          field.handleBlur();
-                          return;
-                        }
-
                         field.handleChange(selected);
                         e.target.value = ""; // Reset the input value to allow re-uploading the same file if needed
                       }}
@@ -463,14 +478,17 @@ export default function DoctorApplyForm() {
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor="additional-documents-field">
-                    Additional Documents
+                    Additional Documents{" "}
+                    <span className="font-normal text-muted-foreground">
+                      (Optional)
+                    </span>
                   </FieldLabel>
                   <div className="flex flex-col items-start gap-2">
                     <Button
                       render={
                         <label htmlFor="additional-documents-field">
-                          <FileUp size="4" />
-                          Upload Additional Documents
+                          <Plus size="4" />
+                          Add Files
                         </label>
                       }
                       nativeButton={false}
@@ -490,19 +508,8 @@ export default function DoctorApplyForm() {
                           return;
                         }
 
-                        const invalidFiles = incomingFiles.some(
-                          (file) =>
-                            !isAcceptedFileSize(file.size) ||
-                            !isAcceptedFileType(file.type),
-                        );
-
-                        if (invalidFiles) {
-                          field.handleBlur();
-                          e.target.value = "";
-                          return;
-                        }
-
                         field.handleChange([...files, ...incomingFiles]);
+                        e.target.value = "";
                       }}
                     />
                     {files.length > 0 && (
@@ -513,36 +520,60 @@ export default function DoctorApplyForm() {
                   </div>
                   {files.length > 0 ? (
                     <ul className="mt-2 flex flex-col gap-2">
-                      {files.map((file, index) => (
-                        <li
-                          key={`${file.name}-${index}`}
-                          className="inline-flex max-w-full items-center gap-2 rounded-lg bg-muted px-3 py-2 text-sm"
-                        >
-                          <span className="flex min-w-0 items-center gap-2">
-                            <FileText
-                              size="16"
-                              className="shrink-0 text-primary"
-                            />
-                            <span className="truncate">{file.name}</span>
-                            <span className="text-xs text-muted-foreground">
-                              {formatFileSize(file.size)}
-                            </span>
-                          </span>
-                          <button
-                            type="button"
-                            aria-label={`Remove ${file.name}`}
-                            onClick={() => {
-                              field.handleChange(
-                                files.filter((_, i) => i !== index),
-                              );
-                              field.handleBlur();
-                            }}
-                            className="text-muted-foreground transition-colors hover:text-destructive focus:outline-none"
+                      {files.map((file, index) => {
+                        const fileError = isInvalid
+                          ? getAdditionalDocumentErrorMessage(file)
+                          : null;
+                        return (
+                          <li
+                            key={`${file.name}-${index}`}
+                            className={`inline-flex max-w-full items-center gap-2 rounded-lg border bg-muted px-3 py-2 text-sm ${
+                              fileError
+                                ? "border-destructive bg-destructive/10 text-destructive"
+                                : "border-border text-muted-foreground"
+                            }`}
                           >
-                            <X size="16" />
-                          </button>
-                        </li>
-                      ))}
+                            <span className="flex min-w-0 items-center gap-2">
+                              <FileText
+                                size="16"
+                                className={`shrink-0 ${
+                                  fileError
+                                    ? "text-destructive"
+                                    : "text-primary"
+                                }`}
+                              />
+                              <span className="truncate">{file.name}</span>
+                              <span
+                                className={`text-xs ${
+                                  fileError
+                                    ? "text-destructive"
+                                    : "text-muted-foreground"
+                                }`}
+                              >
+                                {formatFileSize(file.size)}
+                              </span>
+                            </span>
+                            <button
+                              type="button"
+                              aria-label={`Remove ${file.name}`}
+                              onClick={() => {
+                                field.handleChange(
+                                  files.filter((_, i) => i !== index),
+                                );
+                                field.handleBlur();
+                              }}
+                              className="text-muted-foreground transition-colors hover:text-destructive focus:outline-none"
+                            >
+                              <X size="16" />
+                            </button>
+                            {/* {fileError && (
+                              <p className="text-xs font-normal text-destructive">
+                                {fileError}
+                              </p>
+                            )} */}
+                          </li>
+                        );
+                      })}
                     </ul>
                   ) : (
                     <span className="text-sm text-muted-foreground">
