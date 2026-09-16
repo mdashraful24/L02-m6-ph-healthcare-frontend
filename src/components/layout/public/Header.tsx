@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useGetMe, useLogout } from "@/hooks/auth.hook";
 import { toast } from "@/components/ui/toast";
 import { useQueryClient } from "@tanstack/react-query";
+import Logo from "@/assets/svg/Logo";
 
 export default function Header() {
   const routes = [
@@ -39,7 +40,12 @@ export default function Header() {
   return (
     <header className="w-full h-16 border border-b">
       <div className="flex items-center justify-between h-full max-w-7xl mx-auto px-4">
-        <div>PH Healthcare</div>
+        <div>
+          <Link href="/" className="flex items-center gap-2">
+            <Logo />
+            <span>PH Healthcare</span>
+          </Link>
+        </div>
 
         <nav className="flex gap-5">
           {routes.map((route) => (
