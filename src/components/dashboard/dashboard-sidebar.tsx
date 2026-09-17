@@ -31,15 +31,17 @@ export function DashboardSidebar({ role }: { role: UserRole }) {
   const pathname = usePathname();
   const routes: SidebarItems = sideBarRoutes[role] || [];
 
-  console.log(pathname);
+  // console.log(pathname);
 
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex items-center gap-2">
-          <Logo />
-          <span>PH Healthcare</span>
-        </div>
+        <Link href="/">
+          <div className="flex items-center gap-2">
+            <Logo />
+            <span>PH Healthcare</span>
+          </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         {routes.map((item) => (

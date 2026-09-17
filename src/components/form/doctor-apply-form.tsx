@@ -97,7 +97,7 @@ export default function DoctorApplyForm() {
         },
         {
           onSuccess: (res) => {
-            console.log(res);
+            // console.log(res);
           },
         },
       );
