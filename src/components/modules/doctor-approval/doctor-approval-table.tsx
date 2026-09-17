@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,11 +11,16 @@ import {
 } from "@/components/ui/table";
 import { useSuspenseGetAllDoctors } from "@/hooks";
 import { IDoctorParams } from "@/types";
-import DoctorReviewSheet from "./doctor-review-sheet";
+import { Dispatch, SetStateAction } from "react";
 
-interface IProps extends IDoctorParams {}
+interface IProps extends IDoctorParams {
+  handleReview: Dispatch<SetStateAction<string>>;
+}
 
-export default function DoctorApprovalTable({ ...params }: IProps) {
+export default function DoctorApprovalTable({
+  handleReview,
+  ...params
+}: IProps) {
   const { data } = useSuspenseGetAllDoctors(params);
 
   const doctors = data?.data || [];
@@ -50,7 +56,12 @@ export default function DoctorApprovalTable({ ...params }: IProps) {
                   doctor.verificationStatus.slice(1).toLowerCase()}
               </TableCell>
               <TableCell className="text-right">
-                <DoctorReviewSheet />
+                <Button
+                  variant="outline"
+                  onClick={() => handleReview(doctor.id)}
+                >
+                  Review
+                </Button>
               </TableCell>
             </TableRow>
           ))}

@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DoctorVerificationStatus, IDoctorParams } from "@/types";
 import DoctorApprovalTable from "./doctor-approval-table";
 import DoctorApprovalTableLoading from "./doctor-approval-table-loading";
+import DoctorReviewSheet from "./doctor-review-sheet";
 
 const verificationStatus: ["ALL" | DoctorVerificationStatus, string][] = [
   ["ALL", "All"],
@@ -16,6 +17,7 @@ const verificationStatus: ["ALL" | DoctorVerificationStatus, string][] = [
 
 export default function DoctorApprovalTabs() {
   const [tab, setTab] = useState<"ALL" | DoctorVerificationStatus>("ALL");
+  const [selectedId, setSelectedId] = useState("");
 
   // console.log(tab);
 
@@ -43,8 +45,14 @@ export default function DoctorApprovalTabs() {
       </div>
 
       <Suspense fallback={<DoctorApprovalTableLoading />}>
-        <DoctorApprovalTable {...queryParams} />
+        <DoctorApprovalTable {...queryParams} handleReview={setSelectedId} />
       </Suspense>
+
+      <DoctorReviewSheet
+        selectedId={selectedId}
+        onClose={() => setSelectedId("")}
+        {...queryParams}
+      />
     </>
   );
 }

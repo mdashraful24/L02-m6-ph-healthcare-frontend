@@ -59,3 +59,9 @@ export interface IDoctorParams {
   searchTerm?: string;
   sortOrder?: "desc" | "asc";
 }
+
+export interface IApproveDoctorPayload {
+  doctorId: string;
+  verificationStatus: "VERIFIED" | "REJECTED";
+  rejectionReason?: string;
+}
