@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, type ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DoctorVerificationStatus, IDoctorParams } from "@/types";
@@ -20,11 +20,17 @@ export default function DoctorApprovalTabs() {
   const [tab, setTab] = useState<"ALL" | DoctorVerificationStatus>("ALL");
   const [selectedId, setSelectedId] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [page, setPage] = useState(1);
 
   const debouncedSearch = useDebounce(searchInput);
 
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+    setPage(1);
+  };
+
   const queryParams: IDoctorParams = {
-    page: 1,
+    page,
     limit: 10,
     ...(tab === "ALL" ? {} : { verificationStatus: tab }),
     ...(debouncedSearch ? { searchTerm: debouncedSearch } : {}),
@@ -34,7 +40,11 @@ export default function DoctorApprovalTabs() {
     <>
       <div className="flex justify-between items-center my-5">
         <div>
-          <Input type="search" placeholder="Search by name or email" onChange={(e) => setSearchInput(e.target.value)} />
+          <Input
+            type="search"
+            placeholder="Search by name or email"
+            onChange={(e) => handleSearch(e)}
+          />
         </div>
         <Tabs value={tab} onValueChange={(value) => setTab(value)}>
           <TabsList>
@@ -48,7 +58,11 @@ export default function DoctorApprovalTabs() {
       </div>
 
       <Suspense fallback={<DoctorApprovalTableLoading />}>
-        <DoctorApprovalTable {...queryParams} handleReview={setSelectedId} />
+        <DoctorApprovalTable
+          {...queryParams}
+          handleReview={setSelectedId}
+          handlePageChange={setPage}
+        />
       </Suspense>
 
       <DoctorReviewSheet

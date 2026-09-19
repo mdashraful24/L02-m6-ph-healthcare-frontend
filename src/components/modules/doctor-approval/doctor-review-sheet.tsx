@@ -56,7 +56,8 @@ export default function DoctorReviewSheet({
         console.log("Doctor verification response:", res);
         toast.add({
           title: "Success",
-          description: res.message || "Doctor verification status updated successfully.",
+          description:
+            res.message || "Doctor verification status updated successfully.",
           type: "success",
         });
         handleClose();
@@ -64,7 +65,8 @@ export default function DoctorReviewSheet({
       onError: (err) => {
         toast.add({
           title: "Error",
-          description: err.message || "An error occurred while verifying the doctor.",
+          description:
+            err.message || "An error occurred while verifying the doctor.",
           type: "destructive",
         });
       },

@@ -28,7 +28,10 @@ export default function DoctorApprovalTableLoading() {
         <TableHeader>
           <TableRow>
             {columns.map((column) => (
-              <TableHead key={column.label} className={column.align === "right" ? "text-right" : undefined}>
+              <TableHead
+                key={column.label}
+                className={column.align === "right" ? "text-right" : undefined}
+              >
                 {column.label}
               </TableHead>
             ))}
@@ -38,7 +41,12 @@ export default function DoctorApprovalTableLoading() {
           {[1, 2, 3, 4].map((row) => (
             <TableRow key={row}>
               {columns.map((column) => (
-                <TableCell key={column.label} className={column.align === "right" ? "text-right" : undefined}>
+                <TableCell
+                  key={column.label}
+                  className={
+                    column.align === "right" ? "text-right" : undefined
+                  }
+                >
                   <Skeleton
                     className={
                       column.align === "right"

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { useGetMe } from "@/hooks";
-import { UserRole } from "@/types/user.type";
+import type { UserRole } from "@/types/user.type";
 import AccessDenied from "./access-denied";
 import AuthLoading from "./auth-loading";
 

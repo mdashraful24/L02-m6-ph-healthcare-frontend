@@ -3,7 +3,11 @@
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useResendRegistrationOtp, useVerifyAccount, useVerifyDoctorAccount } from "@/hooks";
+import {
+  useResendRegistrationOtp,
+  useVerifyAccount,
+  useVerifyDoctorAccount,
+} from "@/hooks";
 import { resendRegistrationOtpSchema } from "@/validation";
 import { Button } from "../ui/button";
 import {
@@ -29,11 +33,14 @@ export default function VerifyAccountForm({
 
   const [otp, setOtp] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
-  
-  const { mutate: resendOtp, isPending: resendPending } = useResendRegistrationOtp();
 
-  const { mutate: verifyPatientAccount, isPending: verifyPatientPending } = useVerifyAccount();
-  const {mutate: verifyDoctorAccount, isPending: verifyDoctorPending} = useVerifyDoctorAccount();
+  const { mutate: resendOtp, isPending: resendPending } =
+    useResendRegistrationOtp();
+
+  const { mutate: verifyPatientAccount, isPending: verifyPatientPending } =
+    useVerifyAccount();
+  const { mutate: verifyDoctorAccount, isPending: verifyDoctorPending } =
+    useVerifyDoctorAccount();
 
   const verify = mode === "doctor" ? verifyDoctorAccount : verifyPatientAccount;
 
@@ -100,10 +107,11 @@ export default function VerifyAccountForm({
           return;
         }
 
-        if(mode === "doctor"){
+        if (mode === "doctor") {
           toast.add({
             title: "Verification Successful",
-            description: "An admin will review your application and verify your account. This may take some time. You will be notified via email once your account is verified.",
+            description:
+              "An admin will review your application and verify your account. This may take some time. You will be notified via email once your account is verified.",
             type: "success",
           });
           router.push("/");

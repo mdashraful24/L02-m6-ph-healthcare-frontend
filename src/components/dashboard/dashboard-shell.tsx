@@ -5,7 +5,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "./dashboard-sidebar";
-import { UserRole } from "@/types";
+import type { UserRole } from "@/types";
 
 export default function DashboardShell({
   children,

@@ -6,7 +6,7 @@ import { useGetMe, useLogout } from "@/hooks/auth.hook";
 import { toast } from "@/components/ui/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Logo from "@/assets/svg/Logo";
-import { UserRole } from "@/types";
+import type { UserRole } from "@/types";
 
 export default function Header() {
   const routes = [
