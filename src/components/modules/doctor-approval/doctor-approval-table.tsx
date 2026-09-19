@@ -56,12 +56,13 @@ export default function DoctorApprovalTable({
                   doctor.verificationStatus.slice(1).toLowerCase()}
               </TableCell>
               <TableCell className="text-right">
-                <Button
+                {doctor.user.emailVerified ? <Button
                   variant="outline"
                   onClick={() => handleReview(doctor.id)}
+                  disabled={doctor.verificationStatus !== "PENDING"}
                 >
-                  Review
-                </Button>
+                  {doctor.verificationStatus === "PENDING" ? "Review" : "Reviewed"}
+                </Button> : <Button variant="outline" disabled>Not Verified</Button>}
               </TableCell>
             </TableRow>
           ))}
