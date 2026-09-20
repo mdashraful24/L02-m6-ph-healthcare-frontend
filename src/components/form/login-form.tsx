@@ -28,9 +28,13 @@ export default function LoginForm() {
 
   const form = useForm({
     defaultValues: {
-      email: "admin@phhealthcare.com",
-      password: "TesterAdmin@123",
+      email: "islam50-076@diu.edu.bd",
+      password: "{o6_ol0|]L",
     },
+    // defaultValues: {
+    //   email: "admin@phhealthcare.com",
+    //   password: "TesterAdmin@123",
+    // },
     validators: {
       onSubmit: loginSchema,
     },

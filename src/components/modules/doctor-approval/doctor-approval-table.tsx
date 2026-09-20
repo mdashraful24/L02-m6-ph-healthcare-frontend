@@ -45,6 +45,20 @@ export default function DoctorApprovalTable({
             </TableRow>
           </TableHeader>
           <TableBody>
+            {doctors.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  className="h-32 text-center text-muted-foreground"
+                >
+                  {params.searchTerm
+                    ? `No doctors found matching "${params.searchTerm}".`
+                    : params.verificationStatus
+                      ? `No ${params.verificationStatus.toLowerCase()} doctors available.`
+                      : "No doctors available."}
+                </TableCell>
+              </TableRow>
+            )}
             {doctors.map((doctor, index) => (
               <TableRow key={doctor.id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
