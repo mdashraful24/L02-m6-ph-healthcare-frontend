@@ -1,14 +1,21 @@
-import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import { CalendarDays, Check, ChevronDown, Clock, Video } from "lucide-react";
-import { format } from "date-fns";
 import { cn } from "cn";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import { format } from "date-fns";
+import { Check, ChevronDown, Clock, Video } from "lucide-react";
+import { useState } from "react";
+import { useCreateSchedule } from "@/hooks/schedule.hook";
+import { scheduleSchema } from "@/validation";
 import { Button } from "../ui/button";
-import { Spinner } from "../ui/spinner";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
+import {
+    Field,
+    FieldDescription,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+} from "../ui/field";
+import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
     Select,
     SelectContent,
@@ -20,8 +27,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
-import { scheduleSchema } from "@/validation";
-import { useCreateSchedule } from "@/hooks/schedule.hook";
+import { Spinner } from "../ui/spinner";
+import { toast } from "../ui/toast";
 
 const TIME_OPTIONS = Array.from({ length: 24 * 4 }, (_, index) => {
     const hour = Math.floor(index / 4);
@@ -42,7 +49,7 @@ function formatTime(value: string) {
     return `${String(displayHour).padStart(2, "0")}:${String(minute).padStart(2, "0")} ${period}`;
 }
 
-export default function CreateScheduleForm() {
+export default function CreateScheduleForm({ handleClose }: { handleClose: () => void }) {
     const { mutate: create, isPending } = useCreateSchedule();
     const [dateOpen, setDateOpen] = useState(false);
 
@@ -65,33 +72,33 @@ export default function CreateScheduleForm() {
                 meetingLink: value.meetingLink,
             };
 
-            console.log(scheduleValue);
-
-            // create(scheduleValue, {
-            //   onSuccess: (res) => {
-            //     if (!res.success) {
-            //       toast.add({
-            //         title: "Server Failure",
-            //         description: "Something went wrong. Please try again",
-            //         type: "error",
-            //       });
-            //       return;
-            //     }
-            //     toast.add({
-            //       title: "Schedule Created",
-            //       description: "Your schedule is saved as a draft",
-            //       type: "success",
-            //     });
-            //   },
-            //   onError: (err) => {
-            //     toast.add({
-            //       title: "Schedule creation failed",
-            //       description:
-            //         err.message || "Something went wrong. Please try again",
-            //       type: "error",
-            //     });
-            //   },
-            // });
+            create(scheduleValue, {
+                onSuccess: (res) => {
+                    if (!res.success) {
+                        toast.add({
+                            title: "Server Failure",
+                            description: "Something went wrong. Please try again",
+                            type: "error",
+                        });
+                        return;
+                    }
+                    toast.add({
+                        title: "Schedule Created",
+                        description: "Your schedule is saved as a draft",
+                        type: "success",
+                    });
+                    handleClose();
+                },
+                onError: (err) => {
+                    toast.add({
+                        title: "Schedule creation failed",
+                        description:
+                            err.message || "Something went wrong. Please try again",
+                        type: "error",
+                    });
+                    handleClose();
+                },
+            });
         },
     });
 
@@ -115,33 +122,14 @@ export default function CreateScheduleForm() {
                             <Field data-invalid={isInvalid}>
                                 <FieldLabel htmlFor={field.name}>Date</FieldLabel>
                                 <Popover open={dateOpen} onOpenChange={setDateOpen}>
-                                    <PopoverTrigger
-                                        render={
-                                            <Button
-                                                variant="ghost"
-                                                type="button"
-                                                className={cn(
-                                                    "h-8 w-full justify-start gap-2 rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm font-normal focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
-                                                    "aria-expanded:border-ring aria-expanded:bg-muted",
-                                                    selected
-                                                        ? "text-foreground"
-                                                        : "text-muted-foreground",
-                                                )}
-                                            />
-                                        }
-                                    >
-                                        <CalendarDays className="size-4 shrink-0 text-muted-foreground" />
-                                        <span className="truncate">
-                                            {selected
-                                                ? format(selected, "EEEE, MMMM do, yyyy")
-                                                : "Select a date"}
-                                        </span>
-                                        <ChevronDown className="ml-auto size-4 shrink-0 text-muted-foreground" />
+                                    <PopoverTrigger render={<Button variant="outline" />}>
+                                        {selected ? `${format(selected, "PPP")}` : "Select a Date"}
                                     </PopoverTrigger>
-                                    <PopoverContent align="start">
+                                    <PopoverContent className="w-auto p-0">
                                         <Calendar
                                             mode="single"
                                             selected={selected}
+                                            disabled={{ before: new Date() }}
                                             onSelect={(date) => {
                                                 if (date) {
                                                     field.handleChange(format(date, "yyyy-MM-dd"));
@@ -187,7 +175,9 @@ export default function CreateScheduleForm() {
                                         >
                                             <Clock className="size-4 shrink-0 text-muted-foreground" />
                                             <SelectValue>
-                                                {(value) => (value ? formatTime(value) : "Select start time")}
+                                                {(value) =>
+                                                    value ? formatTime(value) : "Select start time"
+                                                }
                                             </SelectValue>
                                             <SelectIcon>
                                                 <ChevronDown className="size-4" />
@@ -236,7 +226,9 @@ export default function CreateScheduleForm() {
                                         >
                                             <Clock className="size-4 shrink-0 text-muted-foreground" />
                                             <SelectValue>
-                                                {(value) => (value ? formatTime(value) : "Select end time")}
+                                                {(value) =>
+                                                    value ? formatTime(value) : "Select end time"
+                                                }
                                             </SelectValue>
                                             <SelectIcon>
                                                 <ChevronDown className="size-4" />

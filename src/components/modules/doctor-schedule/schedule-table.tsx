@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import {
   Table,
   TableBody,
@@ -7,9 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useSuspenseMySchedules } from "@/hooks";
 import { ScheduleParams } from "@/types";
+import ScheduleActions from "./schedule-actions";
 
-interface Props extends ScheduleParams { }
+interface Props extends ScheduleParams {}
 
 function formatDateTime(value: string) {
   return new Date(value).toLocaleString(undefined, {
@@ -19,7 +22,9 @@ function formatDateTime(value: string) {
 }
 
 export default function ScheduleTable(params: Props) {
-  const schedules = [];
+  const { data } = useSuspenseMySchedules(params);
+
+  const schedules = data?.data ?? [];
 
   if (schedules.length === 0) {
     return (
@@ -68,7 +73,7 @@ export default function ScheduleTable(params: Props) {
                 </span>
               </TableCell>
               <TableCell className="text-right">
-                <Button>View</Button>
+                <ScheduleActions schedule={schedule} />
               </TableCell>
             </TableRow>
           ))}
