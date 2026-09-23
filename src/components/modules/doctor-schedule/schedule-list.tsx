@@ -20,7 +20,7 @@ export default function ScheduleList() {
     page: 1,
     limit: 10,
     sortBy: "startDateTime",
-    sortOrder: "asc",
+    sortOrder: "desc",
     ...(tab === "ALL" ? {} : { status: tab }),
   };
 

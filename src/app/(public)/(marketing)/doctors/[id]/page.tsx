@@ -1,24 +1,25 @@
 import {
-  ArrowLeft,
-  BadgeCheck,
-  Banknote,
-  BriefcaseMedical,
-  Calendar,
-  GraduationCap,
-  IdCard,
-  Stethoscope,
+    ArrowLeft,
+    BadgeCheck,
+    Banknote,
+    BriefcaseMedical,
+    Calendar,
+    GraduationCap,
+    IdCard,
+    Stethoscope,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPublicDoctors, getPublicDoctorProfile } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
+import DoctorBooking from "@/components/modules/doctors/doctor-booking";
 import { formatFee, getInitials } from "@/utils";
 
 export async function generateStaticParams() {
@@ -27,14 +28,14 @@ export async function generateStaticParams() {
 
     const totalPages = first?.meta?.totalPages || 1;
 
-    const all = [...(first.data ?? [])];
+    const all = [...first.data ?? []];
 
     for (let page = 2; page <= totalPages; page++) {
         const response = await getAllPublicDoctors({ page, limit });
-        all.push(...(response.data ?? []));
+        all.push(...response.data ?? []);
     }
 
-    return all.map((doctor)=>({ id: doctor.id }));
+    return all.map((doctor) => ({ id: doctor.id }));
 }
 
 export default async function DoctorDetailsPage({
@@ -114,6 +115,16 @@ export default async function DoctorDetailsPage({
                             <p className="text-2xl font-semibold text-primary">
                                 {formatFee(doctor.consultationFee)}
                             </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Book Appointment</CardTitle>
+                            <CardDescription>Booking doctor appointments should be done through bKash payments.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <DoctorBooking doctorId={doctor.id} />
                         </CardContent>
                     </Card>
 
