@@ -5,6 +5,9 @@ import {
   DoctorApplicationPayload,
   IApproveDoctorPayload,
   IDoctorParams,
+  IPublicDoctorParams,
+  IPublicDoctorProfile,
+  Schedule,
   VerifyAccountPayload,
 } from "@/types";
 
@@ -41,5 +44,30 @@ export function approveDoctor(payload: IApproveDoctorPayload) {
   return apiClient(`/doctor/approve-doctor`, {
     method: "POST",
     body: payload,
+  });
+}
+
+export function getAllPublicDoctors(params: IPublicDoctorParams) {
+  return apiClient<ApiResponse<IPublicDoctorProfile[]>>(
+    "/doctor/all-doctors-public",
+    {
+      params,
+    },
+  );
+}
+
+export function getPublicDoctorProfile(doctorId: string) {
+  return apiClient<ApiResponse<IPublicDoctorProfile>>(
+    `/doctor/public/${doctorId}`,
+  );
+}
+
+export function getTodayScheduleByDoctor(params: {
+  doctorId?: string;
+  page?: number;
+  limit?: number;
+}) {
+  return apiClient<ApiResponse<Schedule[]>>("/schedule/todays-schedule", {
+    params,
   });
 }

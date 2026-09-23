@@ -65,3 +65,24 @@ export interface IApproveDoctorPayload {
   verificationStatus: "VERIFIED" | "REJECTED";
   rejectionReason?: string;
 }
+
+export interface IPublicDoctorProfile {
+  id: string;
+  name: string;
+  specialization: string;
+  licenseNumber: string;
+  qualifications: string;
+  experienceYears: number;
+  bio?: string | null;
+  consultationFee?: number | string | null;
+  createdAt: string;
+}
+
+export interface IPublicDoctorParams {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  specialization?: string;
+  sortBy?: string;
+  sortOrder?: "desc" | "asc";
+}

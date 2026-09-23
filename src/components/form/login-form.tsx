@@ -27,9 +27,13 @@ export default function LoginForm() {
   const { mutate: login, isPending: loginPending } = useLogin();
 
   const form = useForm({
+    // defaultValues: {
+    //   email: "islam50-076@diu.edu.bd",
+    //   password: "{o6_ol0|]L",
+    // },
     defaultValues: {
-      email: "islam50-076@diu.edu.bd",
-      password: "{o6_ol0|]L",
+      email: "tester.doctor@phhealthcare.com",
+      password: "TesterDoctor@123",
     },
     // defaultValues: {
     //   email: "admin@phhealthcare.com",
