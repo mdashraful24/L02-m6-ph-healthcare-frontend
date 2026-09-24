@@ -1,6 +1,6 @@
 export type ScheduleStatus = "DRAFT" | "PUBLISHED";
 
-export interface Schedule {
+export interface ISchedule {
     id: string;
     startDateTime: string;
     endDateTime: string;
@@ -13,13 +13,13 @@ export interface Schedule {
     updatedAt: string;
 }
 
-export interface CreateSchedulePayload {
+export interface ICreateSchedulePayload {
     startDateTime: string;
     endDateTime: string;
     meetingLink: string;
 }
 
-export interface ScheduleParams {
+export interface IScheduleParams {
     status?: ScheduleStatus;
     page?: number;
     limit?: number;
