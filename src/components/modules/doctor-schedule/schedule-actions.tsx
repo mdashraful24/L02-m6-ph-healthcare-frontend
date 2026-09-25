@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { useDeleteSchedule, usePublishSchedule } from "@/hooks";
-import { Schedule } from "@/types";
+import { ISchedule } from "@/types";
 import ScheduleDetailSheet from "./schedule-detail-sheet";
 
-export default function ScheduleActions({ schedule }: { schedule: Schedule }) {
+export default function ScheduleActions({ schedule }: { schedule: ISchedule }) {
   const [detailOpen, setDetailOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 

@@ -22,10 +22,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Schedule } from "@/types";
+import { ISchedule } from "@/types";
 
 interface Props {
-  schedule: Schedule;
+  schedule: ISchedule;
   open: boolean;
   onClose: () => void;
 }
@@ -52,7 +52,7 @@ function durationLabel(start: string, end: string) {
   return `${mins} min`;
 }
 
-function StatusBadge({ status }: { status: Schedule["status"] }) {
+function StatusBadge({ status }: { status: ISchedule["status"] }) {
   const isPublished = status === "PUBLISHED";
 
   return (

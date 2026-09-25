@@ -9,10 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSuspenseMySchedules } from "@/hooks";
-import { ScheduleParams } from "@/types";
+import { IScheduleParams } from "@/types";
 import ScheduleActions from "./schedule-actions";
 
-interface Props extends ScheduleParams {}
+interface Props extends IScheduleParams {}
 
 function formatDateTime(value: string) {
   return new Date(value).toLocaleString(undefined, {

@@ -1,11 +1,11 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { ScheduleParams, ScheduleStatus } from "@/types";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { IScheduleParams, ScheduleStatus } from "@/types";
+import ScheduleCreateDialog from "./schedule-create-dialog";
 import ScheduleListLoading from "./schedule-list-loading";
 import ScheduleTable from "./schedule-table";
-import ScheduleCreateDialog from "./schedule-create-dialog";
 
 const statuses: ["ALL" | ScheduleStatus, string][] = [
   ["ALL", "All"],
@@ -16,7 +16,7 @@ const statuses: ["ALL" | ScheduleStatus, string][] = [
 export default function ScheduleList() {
   const [tab, setTab] = useState<"ALL" | ScheduleStatus>("ALL");
 
-  const queryParams: ScheduleParams = {
+  const queryParams: IScheduleParams = {
     page: 1,
     limit: 10,
     sortBy: "startDateTime",

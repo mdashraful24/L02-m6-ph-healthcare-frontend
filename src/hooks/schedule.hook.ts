@@ -1,16 +1,16 @@
 import {
-  createSchedule,
-  deleteSchedule,
-  getMySchedules,
-  publishSchedule,
-} from "@/api";
-import { ScheduleParams } from "@/types";
-import {
   useMutation,
   useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+import {
+  createSchedule,
+  deleteSchedule,
+  getMySchedules,
+  publishSchedule,
+} from "@/api";
+import { IScheduleParams } from "@/types";
 
 export function useCreateSchedule() {
   const queryClient = useQueryClient();
@@ -23,14 +23,14 @@ export function useCreateSchedule() {
   });
 }
 
-export function useMySchedules(params: ScheduleParams) {
+export function useMySchedules(params: IScheduleParams) {
   return useQuery({
     queryKey: ["schedules", params],
     queryFn: () => getMySchedules(params),
   });
 }
 
-export function useSuspenseMySchedules(params: ScheduleParams) {
+export function useSuspenseMySchedules(params: IScheduleParams) {
   return useSuspenseQuery({
     queryKey: ["schedules", params],
     queryFn: () => getMySchedules(params),

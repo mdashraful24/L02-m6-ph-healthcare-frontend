@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPublicDoctors, getPublicDoctorProfile } from "@/api";
+import DoctorBooking from "@/components/modules/doctors/doctor-booking";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,7 +20,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import DoctorBooking from "@/components/modules/doctors/doctor-booking";
 import { formatFee, getInitials } from "@/utils";
 
 export async function generateStaticParams() {
