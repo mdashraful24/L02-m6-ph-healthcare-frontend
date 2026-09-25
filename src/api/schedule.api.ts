@@ -27,7 +27,10 @@ export function publishSchedule(scheduleId: string) {
 }
 
 export function deleteSchedule(scheduleId: string) {
-  return apiClient<ApiResponse<Schedule>>(`/schedule/delete-schedule/${scheduleId}`, {
-    method: "DELETE",
-  });
+  return apiClient<ApiResponse<Schedule>>(
+    `/schedule/delete-schedule/${scheduleId}`,
+    {
+      method: "DELETE",
+    },
+  );
 }

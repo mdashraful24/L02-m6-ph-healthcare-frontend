@@ -1,19 +1,16 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Select as SelectPrimitive } from "@base-ui/react/select"
-import { cn } from "cn"
+import * as React from "react";
+import { Select as SelectPrimitive } from "@base-ui/react/select";
+import { cn } from "cn";
 
 function Select<Value extends string>(
   props: SelectPrimitive.Root.Props<Value, false>,
 ) {
-  return <SelectPrimitive.Root data-slot="select" {...props} />
+  return <SelectPrimitive.Root data-slot="select" {...props} />;
 }
 
-function SelectTrigger({
-  className,
-  ...props
-}: SelectPrimitive.Trigger.Props) {
+function SelectTrigger({ className, ...props }: SelectPrimitive.Trigger.Props) {
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
@@ -23,7 +20,7 @@ function SelectTrigger({
       )}
       {...props}
     />
-  )
+  );
 }
 
 function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
@@ -33,7 +30,7 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
       className={cn("flex-1 truncate text-left", className)}
       {...props}
     />
-  )
+  );
 }
 
 function SelectIcon({ className, ...props }: SelectPrimitive.Icon.Props) {
@@ -43,7 +40,7 @@ function SelectIcon({ className, ...props }: SelectPrimitive.Icon.Props) {
       className={cn("text-muted-foreground", className)}
       {...props}
     />
-  )
+  );
 }
 
 function SelectContent({
@@ -77,7 +74,7 @@ function SelectContent({
         />
       </SelectPrimitive.Positioner>
     </SelectPrimitive.Portal>
-  )
+  );
 }
 
 function SelectList({ className, ...props }: SelectPrimitive.List.Props) {
@@ -91,13 +88,10 @@ function SelectList({ className, ...props }: SelectPrimitive.List.Props) {
       )}
       {...props}
     />
-  )
+  );
 }
 
-function SelectItem({
-  className,
-  ...props
-}: SelectPrimitive.Item.Props) {
+function SelectItem({ className, ...props }: SelectPrimitive.Item.Props) {
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
@@ -107,7 +101,7 @@ function SelectItem({
       )}
       {...props}
     />
-  )
+  );
 }
 
 function SelectItemIndicator({
@@ -126,7 +120,7 @@ function SelectItemIndicator({
     >
       {children}
     </SelectPrimitive.ItemIndicator>
-  )
+  );
 }
 
 function SelectItemText({
@@ -139,7 +133,7 @@ function SelectItemText({
       className={cn("flex-1 truncate", className)}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -152,4 +146,4 @@ export {
   SelectList,
   SelectTrigger,
   SelectValue,
-}
+};

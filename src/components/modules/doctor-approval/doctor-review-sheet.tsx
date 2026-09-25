@@ -99,7 +99,9 @@ export default function DoctorReviewSheet({
               <h3 className="font-heading text-base font-medium text-foreground">
                 {selectedDoctor.name}
               </h3>
-              <p className="text-sm text-muted-foreground">{selectedDoctor.email}</p>
+              <p className="text-sm text-muted-foreground">
+                {selectedDoctor.email}
+              </p>
             </div>
 
             <dl className="grid gap-3 text-sm">
@@ -107,7 +109,10 @@ export default function DoctorReviewSheet({
                 label="Specialization"
                 value={selectedDoctor.specialization || "N/A"}
               />
-              <InfoRow label="License No." value={selectedDoctor.licenseNumber || "N/A"} />
+              <InfoRow
+                label="License No."
+                value={selectedDoctor.licenseNumber || "N/A"}
+              />
               <InfoRow
                 label="Qualifications"
                 value={selectedDoctor.qualifications || "N/A"}
@@ -120,7 +125,10 @@ export default function DoctorReviewSheet({
                 label="Contact No."
                 value={selectedDoctor.contactNumber || "N/A"}
               />
-              <InfoRow label="Address" value={selectedDoctor.address || "N/A"} />
+              <InfoRow
+                label="Address"
+                value={selectedDoctor.address || "N/A"}
+              />
               <InfoRow
                 label="Consultation Fee"
                 value={
@@ -140,7 +148,9 @@ export default function DoctorReviewSheet({
 
             {selectedDoctor.resume && (
               <div>
-                <p className="text-sm font-medium text-foreground">Resume / CV</p>
+                <p className="text-sm font-medium text-foreground">
+                  Resume / CV
+                </p>
                 <a
                   href={selectedDoctor.resume}
                   target="_blank"
@@ -188,7 +198,9 @@ export default function DoctorReviewSheet({
 
             {selectedDoctor.rejectionReason && (
               <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4">
-                <p className="text-sm font-medium text-destructive">Rejection Reason</p>
+                <p className="text-sm font-medium text-destructive">
+                  Rejection Reason
+                </p>
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                   {selectedDoctor.rejectionReason}
                 </p>
@@ -267,13 +279,7 @@ export default function DoctorReviewSheet({
   );
 }
 
-function InfoRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: ReactNode;
-}) {
+function InfoRow({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-4">
       <dt className="shrink-0 text-muted-foreground">{label}</dt>

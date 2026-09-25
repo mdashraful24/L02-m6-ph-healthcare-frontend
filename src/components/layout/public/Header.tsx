@@ -11,7 +11,7 @@ import type { UserRole } from "@/types";
 export default function Header() {
   const routes = [
     { name: "Home", url: "/" },
-    {name: "Doctors", url: "/doctors" },
+    { name: "Doctors", url: "/doctors" },
     { name: "About us", url: "/about-us" },
   ];
 
